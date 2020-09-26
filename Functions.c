@@ -42,7 +42,7 @@ void open_map_file(int *fd,char *filename)
 }
 
 /*Write structure to .Note*/
-void write_to_note(struct secret_map *map)
+void write_to_note(struct Note_information *note)
 {
 	Elf64_Ehdr *ehdr ; Elf64_Phdr *phdr; Elf64_Shdr *shdr;
 
@@ -62,9 +62,8 @@ void write_to_note(struct secret_map *map)
 			printf("Segment flags:%d\n",phdr[i].p_flags);
 			printf("Segment allignment in memory:%d bytes\n",phdr[i].p_align);
 
-			if(sizeof(*map)<phdr[i].p_filesz)
-			{
-				printf("[+]secret map(%d bytes) structure can fit inside note (%d bytes)\n",sizeof(*map),phdr[i].p_filesz);
+
+		//		printf("[+]secret map(%d bytes) structure can fit inside note (%d bytes)\n",sizeof(*map),phdr[i].p_filesz);
 				/*Malloc struct*/
 				struct secret_map *structure = malloc(sizeof(struct secret_map));
 				structure->offset = 1000;
@@ -72,7 +71,13 @@ void write_to_note(struct secret_map *map)
 					
 				/*memcopy struct to start of note*/
 				memcpy((host.host+phdr[i].p_offset),structure,sizeof(struct secret_map));
-			}	
+
+				/*save offset information*/
+				note->offset = phdr[i].p_offset;
+				note->size = sizeof(struct secret_map);
+				
+				free(structure);
+			
 			
 			break;
 		}	
@@ -80,4 +85,69 @@ void write_to_note(struct secret_map *map)
 }
 
 /*Read structure from .Note*/
+void read_from_note(struct Note_information *note)
+{
+	Elf64_Ehdr *ehdr; Elf64_Phdr *phdr;
+	
+	ehdr = (Elf64_Ehdr *)host.host;
+	phdr = (Elf64_Phdr *)&host.host[ehdr->e_phoff];
+
+	struct secret_map *structure = malloc(sizeof(struct secret_map));
+
+	memcpy(structure,host.host+note->offset,sizeof(struct secret_map));
+
+	printf("structure->offset = %d\nstructure->size = %d\n",structure->offset,structure->size);
+		
+}
+
+
+/*write and read char bytes, string*/
+void write_string()
+{
+	Elf64_Ehdr *ehdr; Elf64_Phdr *phdr;
+	
+	ehdr = (Elf64_Ehdr *)host.host;
+	phdr = (Elf64_Phdr *)&host.host[ehdr->e_phoff];
+
+//	char string[100]="\0";
+//	strcpy(string,"SECRET");
+
+	char *string = malloc(sizeof(char)*100);
+	strcpy(string,"SECRET MESSAGE!\0");
+
+	for(int i=0;i<ehdr->e_phnum;i++)
+	{
+		if(phdr[i].p_type==PT_NOTE)
+		{
+			memcpy(host.host+phdr[i].p_offset,string,sizeof(string));
+			break;	
+		}
+	}
+
+	free(string);	
+}
+
+void read_string()
+{
+	Elf64_Ehdr *ehdr; Elf64_Phdr *phdr;
+
+	ehdr = (Elf64_Ehdr *)host.host;
+	phdr = (Elf64_Phdr *)&host.host[ehdr->e_phoff];
+
+	char *string = malloc(sizeof(char)*100);
+	
+	for(int i=0;i<ehdr->e_phnum;i++)
+	{
+		if(phdr[i].p_type==PT_NOTE)
+		{
+			memcpy(string,host.host+phdr[i].p_offset,sizeof(string));
+			break;	
+		}
+	}
+
+	printf("string = %s\n",string);
+	free(string); 
+
+}
+
 

@@ -17,10 +17,20 @@ int main(int argc, char **argv)
 	int fd;
 	open_map_file(&fd,argv[1]);
 
-	write_to_note();	
+	struct Note_information note;
 
-
+	//write_to_note(&note);
 	
+//	read_from_note(&note);
+
+	write_string();
+
+	read_string();
+
+
+
+
+		
 
 
 }

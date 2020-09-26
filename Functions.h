@@ -31,5 +31,7 @@ struct secret_map
 
 
 void open_map_file(int *fd,char *filename);
-void write_to_note();
-
+void write_to_note(struct Note_information *note);
+void read_from_note(struct Note_information *note);
+void write_string();
+void read_string();
