@@ -5,5 +5,22 @@
 #include<stdlib.h>
 #include<sys/mman.h>
 #include<fcntl.h>
+#include<sys/stat.h>
+#include<sys/types.h>
+#include "Functions.h"
 
 /*Try and hide a file into a binary file and then read it again*/
+int main(int argc, char **argv)
+{
+
+	/*open and map file*/
+	int fd;
+	open_map_file(&fd,argv[1]);
+
+	write_to_note();	
+
+
+	
+
+
+}
