@@ -35,3 +35,4 @@ void write_to_note(struct Note_information *note);
 void read_from_note(struct Note_information *note);
 void write_string();
 void read_string();
+void find_code_cave();

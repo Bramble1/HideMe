@@ -25,7 +25,9 @@ int main(int argc, char **argv)
 
 //	write_string();
 
-	read_string();
+//	read_string();
+
+	find_code_cave();
 
 
 

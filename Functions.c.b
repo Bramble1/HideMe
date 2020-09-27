@@ -152,30 +152,4 @@ void read_string()
 
 }
 
-void find_code_cave()
-{
-	Elf64_Ehdr *ehdr; Elf64_Phdr *phdr;
-
-	ehdr = (Elf64_Ehdr *)host.host;
-	phdr = (Elf64_Phdr *)&host.host[ehdr->e_phoff];
-
-	int file_size = 162;	//162 byte example
-	int cave_offset,cave_length; cave_offset = cave_length = 0;
-	for(int i=0;i<ehdr->e_phnum;i++)
-	{
-		/*calculate start*/
-		cave_offset = phdr[i].p_offset + phdr[i].p_filesz;
-		/*next calculate the gap*/
-		cave_length = phdr[i+1].p_offset - cave_offset;
-
-		if(cave_length>=file_size)
-		{
-			printf("[+]Found cave to fit secret file\n");
-			printf("cave offset = %d and length = %d\n",cave_offset,cave_length);
-			break;
-		}
-
-	}
-}
-
 
