@@ -31,8 +31,9 @@ struct secret_map
 
 
 void open_map_file(int *fd,char *filename);
-void write_to_note(struct Note_information *note);
-void read_from_note(struct Note_information *note);
+void write_roadmap(Elf64_Addr offset,int64_t length);
+void read_roadmap();
 void write_string();
 void read_string();
-void find_code_cave();
+void write_secret_file();
+void read_secret_file();

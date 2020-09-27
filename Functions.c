@@ -41,8 +41,10 @@ void open_map_file(int *fd,char *filename)
 	host.host = mem;
 }
 
-/*Write structure to .Note*/
-void write_to_note(struct Note_information *note)
+/*Save secret file coordinates in struct and write as a roadmap to .Note
+ * @offset = address of where secret file is located in binary
+ * @length = length of bytes of secret file in binary*/
+void write_roadmap(Elf64_Addr offset,int64_t length)
 {
 	Elf64_Ehdr *ehdr ; Elf64_Phdr *phdr; Elf64_Shdr *shdr;
 
@@ -53,7 +55,7 @@ void write_to_note(struct Note_information *note)
 	{
 		if(phdr[i].p_type==PT_NOTE)
 		{
-			printf("Note segment:\n");
+		/*	printf("Note segment:\n");
 			printf("File offset of segment:%d bytes\n",phdr[i].p_offset);
 			printf("Virtual address offset of segment in memory:%d bytes\n",phdr[i].p_vaddr);
 			printf("Physical address:%d bytes\n",phdr[i].p_paddr);
@@ -61,23 +63,32 @@ void write_to_note(struct Note_information *note)
 			printf("Segment size in memory:%d\n",phdr[i].p_memsz);
 			printf("Segment flags:%d\n",phdr[i].p_flags);
 			printf("Segment allignment in memory:%d bytes\n",phdr[i].p_align);
-
-
-		//		printf("[+]secret map(%d bytes) structure can fit inside note (%d bytes)\n",sizeof(*map),phdr[i].p_filesz);
+		*/
+		
+			if(sizeof(struct secret_map)<=phdr[i].p_filesz)
+			{
+				printf("[+]Secret roadmap struct can fit in .Note\n");
+	
 				/*Malloc struct*/
 				struct secret_map *structure = malloc(sizeof(struct secret_map));
-				structure->offset = 1000;
-				structure->size = 30;
+				structure->offset = offset;
+				structure->size = length;
 					
 				/*memcopy struct to start of note*/
 				memcpy((host.host+phdr[i].p_offset),structure,sizeof(struct secret_map));
 
 				/*save offset information*/
-				note->offset = phdr[i].p_offset;
-				note->size = sizeof(struct secret_map);
+		/*		note->offset = phdr[i].p_offset;
+				note->size = sizeof(struct secret_map);*/
 				
 				free(structure);
-			
+
+				printf("[+]Secret roadmap injected into .Note segment\n");
+			}
+			else
+			{
+				printf("[-]Secret roadmap struct to small for .NOTE\n");
+			}
 			
 			break;
 		}	
@@ -85,7 +96,7 @@ void write_to_note(struct Note_information *note)
 }
 
 /*Read structure from .Note*/
-void read_from_note(struct Note_information *note)
+void read_roadmap(/*struct secret_map *map*/)
 {
 	Elf64_Ehdr *ehdr; Elf64_Phdr *phdr;
 	
@@ -94,10 +105,25 @@ void read_from_note(struct Note_information *note)
 
 	struct secret_map *structure = malloc(sizeof(struct secret_map));
 
-	memcpy(structure,host.host+note->offset,sizeof(struct secret_map));
+	for(int i=0;i<ehdr->e_phnum;i++)
+	{
+		if(phdr[i].p_type==PT_NOTE)
+		{
+			memcpy(structure,host.host+phdr[i].p_offset,sizeof(struct secret_map));
+			break;
+		}
+	}
 
 	printf("structure->offset = %d\nstructure->size = %d\n",structure->offset,structure->size);
-		
+
+/*	map->offset = structure->offset;
+	map->size = structure->size;
+
+	free(structure);
+
+	printf("[+]Obtained roadmap from .NOTE segment\n");
+	*/	
+	free(structure);	
 }
 
 
@@ -152,14 +178,26 @@ void read_string()
 
 }
 
-void find_code_cave()
+void write_secret_file()
 {
 	Elf64_Ehdr *ehdr; Elf64_Phdr *phdr;
 
 	ehdr = (Elf64_Ehdr *)host.host;
 	phdr = (Elf64_Phdr *)&host.host[ehdr->e_phoff];
 
-	int file_size = 162;	//162 byte example
+
+	/*open key file and mmap to heap*/
+	int fd = open("key",O_RDONLY);
+
+	struct stat st;
+	lstat("key",&st);
+
+	uint8_t *secret_file = (int8_t *)malloc(st.st_size);
+
+	/*read file into allocated memory*/
+	read(fd,secret_file,st.st_size);
+
+
 	int cave_offset,cave_length; cave_offset = cave_length = 0;
 	for(int i=0;i<ehdr->e_phnum;i++)
 	{
@@ -168,14 +206,29 @@ void find_code_cave()
 		/*next calculate the gap*/
 		cave_length = phdr[i+1].p_offset - cave_offset;
 
-		if(cave_length>=file_size)
+		if(cave_length>=st.st_size)
 		{
 			printf("[+]Found cave to fit secret file\n");
 			printf("cave offset = %d and length = %d\n",cave_offset,cave_length);
+
+
+			/*memcpy secret_file into code cave*/
+			memcpy((host.host+cave_offset),secret_file,st.st_size);
+			printf("[+]Secret file injected into binary\n");
+
+			map.offset = cave_offset;
+			map.size = cave_length;	
+
 			break;
 		}
 
 	}
+	free(secret_file);
 }
 
+void read_secret_file()
+{
+	/*useing map to obtain the location of secret file*/
+
+}
 

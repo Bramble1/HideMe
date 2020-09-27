@@ -17,20 +17,23 @@ int main(int argc, char **argv)
 	int fd;
 	open_map_file(&fd,argv[1]);
 
-	struct Note_information note;
+	write_roadmap(1376,162);
 
-	//write_to_note(&note);
-	
-//	read_from_note(&note);
+	read_roadmap();
 
-//	write_string();
-
-//	read_string();
-
-	find_code_cave();
-
-
-
+	/*write secret key to available code cave
+	 * and then call write_roadmap*/
+				
+	/*Storing
+	 * ---------------------
+	 * 1. write_secret_file()
+	 * 2. write_roadmap()
+	 *
+	 * Retrieving
+	 * ---------------------
+	 * 1. read_roadmap()
+	 * 2. read_secret_file()
+	 * */
 
 		
 
