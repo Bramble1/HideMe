@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	
 //	read_from_note(&note);
 
-	write_string();
+//	write_string();
 
 	read_string();
 

@@ -115,11 +115,13 @@ void write_string()
 	char *string = malloc(sizeof(char)*100);
 	strcpy(string,"SECRET MESSAGE!\0");
 
+	int size = strlen(string);
+
 	for(int i=0;i<ehdr->e_phnum;i++)
 	{
 		if(phdr[i].p_type==PT_NOTE)
 		{
-			memcpy(host.host+phdr[i].p_offset,string,sizeof(string));
+			memcpy(host.host+phdr[i].p_offset,string,size);
 			break;	
 		}
 	}
@@ -140,7 +142,7 @@ void read_string()
 	{
 		if(phdr[i].p_type==PT_NOTE)
 		{
-			memcpy(string,host.host+phdr[i].p_offset,sizeof(string));
+			memcpy(string,host.host+phdr[i].p_offset,100);
 			break;	
 		}
 	}
