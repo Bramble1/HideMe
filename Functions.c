@@ -11,10 +11,10 @@
 
 struct Host host;
 struct secret_map map;
-
+char sfile[100];
 
 /*Open and map binary into memory*/
-void open_map_file(int *fd,char *filename)
+void open_map_file(int *fd,char *filename,char *secret_file)
 {
 	struct stat st;
 
@@ -39,12 +39,14 @@ void open_map_file(int *fd,char *filename)
 	}
 	
 	host.host = mem;
+	
+	strcpy(sfile,secret_file);
 }
 
 /*Save secret file coordinates in struct and write as a roadmap to .Note
  * @offset = address of where secret file is located in binary
  * @length = length of bytes of secret file in binary*/
-void write_roadmap(Elf64_Addr offset,int64_t length)
+void write_roadmap()
 {
 	Elf64_Ehdr *ehdr ; Elf64_Phdr *phdr; Elf64_Shdr *shdr;
 
@@ -71,8 +73,8 @@ void write_roadmap(Elf64_Addr offset,int64_t length)
 	
 				/*Malloc struct*/
 				struct secret_map *structure = malloc(sizeof(struct secret_map));
-				structure->offset = offset;
-				structure->size = length;
+				structure->offset = map.offset;
+				structure->size = map.size;
 					
 				/*memcopy struct to start of note*/
 				memcpy((host.host+phdr[i].p_offset),structure,sizeof(struct secret_map));
@@ -114,15 +116,15 @@ void read_roadmap(/*struct secret_map *map*/)
 		}
 	}
 
-	printf("structure->offset = %d\nstructure->size = %d\n",structure->offset,structure->size);
+//	printf("structure->offset = %d\nstructure->size = %d\n",structure->offset,structure->size);
 
-/*	map->offset = structure->offset;
-	map->size = structure->size;
+	map.offset = structure->offset;
+	map.size = structure->size;
 
-	free(structure);
+//	free(structure);
 
 	printf("[+]Obtained roadmap from .NOTE segment\n");
-	*/	
+	
 	free(structure);	
 }
 
@@ -187,12 +189,13 @@ void write_secret_file()
 
 
 	/*open key file and mmap to heap*/
-	int fd = open("key",O_RDONLY);
+	int fd = open(sfile,O_RDONLY);
 
 	struct stat st;
-	lstat("key",&st);
+	lstat(sfile,&st);
 
-	uint8_t *secret_file = (int8_t *)malloc(st.st_size);
+//	uint8_t *secret_file = (int8_t *)malloc(st.st_size);
+	char *secret_file = malloc(sizeof(char)*st.st_size);
 
 	/*read file into allocated memory*/
 	read(fd,secret_file,st.st_size);
@@ -217,7 +220,8 @@ void write_secret_file()
 			printf("[+]Secret file injected into binary\n");
 
 			map.offset = cave_offset;
-			map.size = cave_length;	
+			map.size = st.st_size;
+		//	map.size = cave_length;	
 
 			break;
 		}
@@ -229,6 +233,20 @@ void write_secret_file()
 void read_secret_file()
 {
 	/*useing map to obtain the location of secret file*/
+	read_roadmap();
+
+	/*mmap some memory enough on the heap to get file from binary into allocated memory*/
+	char *buf = malloc(sizeof(char)*map.size);
+
+	/*memcpy into buf*/
+	memcpy(buf,host.host+map.offset,map.size);
+	
+	/*write to a temp "key" file*/
+	FILE *fd = fopen(sfile,"a+");
+
+	fwrite(buf,map.size,1,fd); 
+
+	fclose(fd);	
 
 }
 

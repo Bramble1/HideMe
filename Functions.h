@@ -30,8 +30,8 @@ struct secret_map
 };
 
 
-void open_map_file(int *fd,char *filename);
-void write_roadmap(Elf64_Addr offset,int64_t length);
+void open_map_file(int *fd,char *filename,char *secret_file);
+void write_roadmap();
 void read_roadmap();
 void write_string();
 void read_string();

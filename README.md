@@ -1,5 +1,7 @@
 # HideMe
-Hide Encrypted data, or private keys  inside an unsuspecting binary file
+Hide Encrypted .gpg Files  inside an unsuspecting binary file
+
+Program only accepts already encrypted files to then hide inside an executable binary, to add another level of security in terms of hiding encrypted file
 
 
 # To do
