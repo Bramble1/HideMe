@@ -5,7 +5,7 @@ Program only accepts already encrypted files to then hide inside an executable b
 
 # Usage
 
-./HideMe h    (for help on how to use program)
+      ./HideMe h    (for help on how to use program)
 
 
 # To do
