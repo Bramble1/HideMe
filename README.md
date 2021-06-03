@@ -8,7 +8,7 @@ Program only accepts already encrypted files to then hide inside an executable b
       ./HideMe h    (for help on how to use program)
 
 
-# To do
+# Complete
 
 1. Create a structure to contain information about where the secret file is located
    inside the binary, as well as the size for extraction.
@@ -17,6 +17,11 @@ Program only accepts already encrypted files to then hide inside an executable b
    space, so when we are extracting a secret key or file from an unsuspecting binary
    we can obtain this structure in order to understand if a secret file exists
    and it's relevant information for extraction.
+   
+# Currently in progress (refer to development branch for updates)
+
+1. divide the binary data and store each peice in empty code caves within a linked list data structure.
+2. Will be using a hashing algorithm to get a randomised value, which will be stored hidden in the binary, so the extraction program knows which order the divided binary data needs to be constructed in, as the linked list will allow us to store the dividided data in a random order, thus needs to be constructed back in the correct order to restore the .pgp file.
 
 
 Algorithm
@@ -41,3 +46,4 @@ Then When Extracting the secret key file
 1. Obtain struct from .Note
 
 2. Using Struct to determine where the secret file is located, and extract the secret key
+3. 
