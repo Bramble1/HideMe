@@ -23,5 +23,5 @@ when inspecting a suspicious binary. And furthermore can use the program itself 
 
 So to mitigate the prior issue, The next version the user will be required to enter a password which will be hashed and stored within each binary.
 
-Again this is just an educational proof of concept program. Nothing more.
+Again this is just an educational proof of concept program. Nothing more. Which others can learn from, if they wish.
 
