@@ -3,7 +3,7 @@ Hide Encrypted .gpg Files  inside an unsuspecting binary file Features being to 
 
 # Compile
 
-	./compile	#Will create a test lab in the main directory with the compiled Hideme , file.pgp and target files for testing.
+	./compile	#Will create a test lab in the directory.
 
 # Usage
 
