@@ -1,6 +1,10 @@
 # HideMe
 Hide Encrypted .gpg Files  inside an unsuspecting binary file Features being to divide and hide and divide/randomise and hide. Proof of concept, Educational purposes only. This is a basic proof of concept which tests the concept by dividing the pgp file to hide up to a maximum of 3 segments in this example.
 
+# Compile
+
+	./compile	#Will create a test lab in the main directory with the compiled Hideme , file.pgp and target files for testing.
+
 # Usage
 
       ./HideMe          #Run Without arguments and the help menu will be printed as shown below:
