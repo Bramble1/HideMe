@@ -1,49 +1,27 @@
 # HideMe
-Hide Encrypted .gpg Files  inside an unsuspecting binary file
-
-Program only accepts already encrypted files to then hide inside an executable binary, to add another level of security in terms of hiding encrypted file
+Hide Encrypted .gpg Files  inside an unsuspecting binary file Features being to divide and hide and divide/randomise and hide. Proof of concept, Educational purposes only. This is a basic proof of concept which tests the concept by dividing the pgp file to hide up to a maximum of 3 segments in this example.
 
 # Usage
 
-      ./HideMe h    (for help on how to use program)
+      ./HideMe          #Run Without arguments and the help menu will be printed as shown below:
+      
+       "[?]write/read to binary:
+	./Hideme <w> <divisor[1-3] > <Target_Binary> <file.pgp>
+	./HideMe <r> <Target_binary> <extracted.pgp>
+      __________________________________
+      [?]randomised write/read to binary:
+	./Hideme <rw> <divisor[2-3] > <Target_Binary> <file.pgp>
+	./Hideme <rr> <Target_Binary> <extracted.pgp>"
 
+# Todo
 
-# Complete
+Find a better place to hide the map structure. Annotate code. 
 
-1. Create a structure to contain information about where the secret file is located
-   inside the binary, as well as the size for extraction.
+Use a user defined config for important information the program relies upon,otherwise it's hardwwired into the code, which can be reverse engineered,and it being
+open source, the program should not be used in the real world because of this, as understanding the program, someone will then know what to look out for
+when inspecting a suspicious binary. And furthermore can use the program itself to check.
 
-2. Store this structure inside the .note section if we can, or any other unused
-   space, so when we are extracting a secret key or file from an unsuspecting binary
-   we can obtain this structure in order to understand if a secret file exists
-   and it's relevant information for extraction.
-   
-# Currently in progress (refer to development branch for updates)
+So to mitigate the prior issue, The next version the user will be required to enter a password which will be hashed and stored within each binary.
 
-1. divide the binary data and store each peice in empty code caves within a linked list data structure.
-2. Will be using a hashing algorithm to get a randomised value, which will be stored hidden in the binary, so the extraction program knows which order the divided binary data needs to be constructed in, as the linked list will allow us to store the dividided data in a random order, thus needs to be constructed back in the correct order to restore the .pgp file.
+Again this is just an educational proof of concept program. Nothing more.
 
-
-Algorithm
-----------
-
-1. Open supplied binary into memory
-
-2. Get the secret file, supplied 
-
-3. Go through the program header table and check the size difference between each segment
-   to determine any code caves (empty bytes) big enough that would fit the size of the secret
-   file. If Found then store the coordinates.
-
-4. Using a structure store information of those coordinates, as well as the size. Using this structure
-   to then write the secret file into the code cave.
-
-5. The Write the structure itself (should be small enough) to the .NOTE segment(overrite it)
-
----------------
-Then When Extracting the secret key file
-
-1. Obtain struct from .Note
-
-2. Using Struct to determine where the secret file is located, and extract the secret key
-3. 
