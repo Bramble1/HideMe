@@ -29,3 +29,11 @@ So to mitigate the prior issue, The next version the user will be required to en
 
 Again this is just an educational proof of concept program. Nothing more. Which others can learn from, if they wish.
 
+
+# Arguably Still usable in current state.
+
+Even though This program is open source. It can still be used successfully if an administrator or anyone is being lazy and not thoroughly checking
+each binary, So you could send pgp files over a network hidden in a compiled C program in this case. So if it get's intertecpted, or found on a hdd. It's hidden
+in the binary and and the first assumption is that it's an ELF Binary. And Worst case scenario, it's found and pieced backtogether in the correct order and extracted, it's still going to be encrypted, and thus now finding the pgp file, they then now need to break that, so I would say it's better than just sending
+pgp files to someone and them being stored or sent in plain site. This adds another level of obscurity and This program is not very popular, so I doubt most people will be aware of this program in it's current state.
+
